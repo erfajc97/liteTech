@@ -12,7 +12,7 @@ const usePostsHook = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [bannerPosts, setBannerPosts] = useState<Post>();
 
-  const theRestOfPostsFirstPage = posts.filter((post) => post.id !== firstThreePosts[0].id && post.id !== firstThreePosts[1].id && post.id !== firstThreePosts[2].id && post.id !== "b93fad0d-04f6-4333-90b4-a5ca81889e89") || [];
+  const theRestOfPostsFirstPage = posts.filter((post) => post.id !== firstThreePosts[0].id && post.id !== firstThreePosts[1].id && post.id !== firstThreePosts[2].id && post.id !== "4bc31c32-2a58-478a-9b9f-4e02d6e90824") || [];
 
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const usePostsHook = () => {
   const getBannerPosts = async () => {
     try {
       setLoading(true);
-      const { data } = await getOnePostByIdServices({ id: "b93fad0d-04f6-4333-90b4-a5ca81889e89" });
+      const { data } = await getOnePostByIdServices({ id: "4bc31c32-2a58-478a-9b9f-4e02d6e90824" });
       setBannerPosts(data?.response);
     } catch (error) {
       console.log(error);
@@ -39,8 +39,8 @@ const usePostsHook = () => {
       const { data } = await getAllPostsServices({ query: query });
       const newPosts = data?.response?.data || [];
       if (page === 1) {
-        const lastThree = [...newPosts].slice(-3);
-        setFirstThreePosts(lastThree);
+        const firstThree = [...newPosts].slice(1, 4);
+        setFirstThreePosts(firstThree);
         setPosts(newPosts);
       } else {
         setPosts((prevPosts) => [
