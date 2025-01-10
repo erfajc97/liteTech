@@ -40,7 +40,7 @@ export const usePostsStore = create<PostsStore>()(
         try {
           set({ loading: true, error: false, errorMessage: '' });
           const response = await getAllPostsServices({ query });
-          set({ posts: response?.data?.response || [] });
+          set({ posts: response?.data?.response?.data || [] });
         } catch (error) {
           set({ error: true, errorMessage: 'Error al obtener los posts' })
           console.log(error)
