@@ -22,8 +22,7 @@ interface PostsStore {
   setIsUploading: (isUploading: boolean) => void;
   isUploading: boolean;
   isCancelled: boolean;
-  setIsCancelled: (isCancelled: boolean) => void;
-  handleCancel: () => void;
+  setIsCancelled: (value: boolean) => void;
   getAllPosts: (query: string) => void;
 }
 
@@ -75,9 +74,9 @@ export const usePostsStore = create<PostsStore>()(
         }
       },
       clearPosts: () => set({ posts: [] }),
-      setIsUploading: (isUploading: boolean) => set({ isUploading }),
-      setIsCancelled: (isCancelled: boolean) => set({ isCancelled }),
-      handleCancel: () => set({ isCancelled: true, isUploading: false }),
+      setIsUploading: (value: boolean) => set({ isUploading: value }),
+      setIsCancelled: (value: boolean) => set({ isCancelled: value }),
+      // handleCancel: () => set({ isCancelled: true, isUploading: false }),
     }),
     {
       name: 'posts-storage',

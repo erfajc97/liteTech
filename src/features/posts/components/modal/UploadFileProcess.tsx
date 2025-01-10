@@ -5,10 +5,11 @@ import React from "react";
 
 const UploadFileProcess = ({ setDoneSuccessfully }: { setDoneSuccessfully: (value: boolean) => void }) => {
   const [value, setValue] = React.useState(0);
-  const { handleCancel, setIsUploading } = usePostsStore()
+  const { setIsUploading, setIsCancelled } = usePostsStore();
 
   const handleProgressCancel = () => {
-    handleCancel();
+    setIsUploading(false);
+    setIsCancelled(true);
     setValue(0);
   };
 
@@ -25,8 +26,10 @@ const UploadFileProcess = ({ setDoneSuccessfully }: { setDoneSuccessfully: (valu
       });
     }, 500);
 
-    return () => clearInterval(interval);
-  }, [setIsUploading]);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [setDoneSuccessfully, setIsUploading]);
 
   return (
     <div className="flex flex-col items-center gap-2">
