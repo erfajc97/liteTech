@@ -14,6 +14,13 @@ interface Post {
 
 interface PostsStore {
   posts: Post[];
+  pagination: {
+    total: number;
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  };
+  onePost: Post;
   loading: boolean;
   error: boolean;
   errorMessage: string;
@@ -23,13 +30,27 @@ interface PostsStore {
   isUploading: boolean;
   isCancelled: boolean;
   setIsCancelled: (value: boolean) => void;
-  getAllPosts: (query: string) => void;
+  getAllPosts: (query: string) => Promise<Post[]>;
+  getOnePostById: (id: string) => void;
 }
 
 export const usePostsStore = create<PostsStore>()(
   persist(
     (set) => ({
       posts: [],
+      pagination: {
+        currentPage: 1,
+        total: 1,
+        pageSize: 1,
+        totalPages: 1,
+      },
+      onePost: {
+        id: '',
+        title: '',
+        image: '',
+        tags: '',
+        timeToRead: '',
+      },
       loading: false,
       error: false,
       errorMessage: '',
@@ -40,7 +61,8 @@ export const usePostsStore = create<PostsStore>()(
         try {
           set({ loading: true, error: false, errorMessage: '' });
           const response = await getAllPostsServices({ query });
-          set({ posts: response?.data?.response?.data || [] });
+          set({ posts: response?.data?.response?.data || [], pagination: response?.data?.response?.meta?.pagination || {} });
+          return response?.data?.response?.data || [];
         } catch (error) {
           set({ error: true, errorMessage: 'Error al obtener los posts' })
           console.log(error)
@@ -53,7 +75,11 @@ export const usePostsStore = create<PostsStore>()(
         set({ loading: true, error: false, errorMessage: '' });
         try {
           const response = await createAnewPostServices(formData);
-          set({ error: response?.error || false, errorMessage: response?.message || '' })
+          set((state) => ({ 
+            posts: [...state.posts, response?.data?.response], 
+            error: response?.error || false, 
+            errorMessage: response?.message || '' 
+          }))
         } catch (error) {
           set({ error: true, errorMessage: 'Error al crear el post' })
           console.log(error)
@@ -65,7 +91,8 @@ export const usePostsStore = create<PostsStore>()(
         try {
           set({ loading: true, error: false, errorMessage: '' });
           const response = await getOnePostByIdServices({ id });
-          set({ error: response?.error || false, errorMessage: response?.message || '' })
+          console.log(response)
+          set({ onePost: response?.data?.response || {}, error: response?.error || false, errorMessage: response?.message || '' })
         } catch (error) {
           set({ error: true, errorMessage: 'Error al crear el post' })
           console.log(error)
@@ -76,7 +103,6 @@ export const usePostsStore = create<PostsStore>()(
       clearPosts: () => set({ posts: [] }),
       setIsUploading: (value: boolean) => set({ isUploading: value }),
       setIsCancelled: (value: boolean) => set({ isCancelled: value }),
-      // handleCancel: () => set({ isCancelled: true, isUploading: false }),
     }),
     {
       name: 'posts-storage',

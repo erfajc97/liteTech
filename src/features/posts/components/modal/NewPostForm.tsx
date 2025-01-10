@@ -7,22 +7,19 @@ import useNewPostHook from "../../hooks/useNewPostHook";
 import UploadFileProcess from "./UploadFileProcess";
 import { usePostsStore } from "@/store/usePostsStore";
 
-
-
 const NewPostForm = ({ setDoneSuccessfully }: { setDoneSuccessfully: (value: boolean) => void }) => {
   const [form] = Form.useForm();
   const { handleSubmit } = useNewPostHook();
   const { setIsUploading, isUploading, setIsCancelled } = usePostsStore();
 
-
   const isProcess = () => {
     setIsUploading(true);
     setIsCancelled(false);
-  }
+  };
 
   const onFinish = async (values: FormValues) => {
     await handleSubmit(values);
-    isProcess()
+    isProcess();
     form.resetFields();
   };
 
@@ -60,6 +57,7 @@ const NewPostForm = ({ setDoneSuccessfully }: { setDoneSuccessfully: (value: boo
             }}
           />
         </Form.Item>
+
         {isUploading ? (
           <UploadFileProcess setDoneSuccessfully={setDoneSuccessfully} />
         ) : (
@@ -80,6 +78,7 @@ const NewPostForm = ({ setDoneSuccessfully }: { setDoneSuccessfully: (value: boo
             />
           </Form.Item>
         )}
+
         <Form.Item>
           <div className="w-full lg:flex lg:justify-center">
             <Button

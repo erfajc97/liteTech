@@ -6,9 +6,11 @@ import AllPosts from './components/AllPosts';
 import TagCard from './components/TagCard';
 import Topics from './components/Topics';
 import BannerSkeleton from '../../app/components/skeleton/BannerSkeleton';
+import { usePostsStore } from '@/store/usePostsStore';
 
 const LiteTech = () => {
-  const { bannerPosts, thefirstThreePosts, theRestOfPostsFirstPage, loading, currentPage, setCurrentPage } = usePostsHook();
+  const { bannerPosts, thefirstThreePosts, theRestOfPostsFirstPage, currentPage, setCurrentPage } = usePostsHook();
+  const { loading } = usePostsStore();
   return (
     <div className="pt-14">
       <p className='pb-5 text-white text-lg hidden md:block'>Today story</p>

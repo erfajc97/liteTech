@@ -1,73 +1,63 @@
 "use client"
 import { useEffect, useState } from "react";
 import { Post } from "../types";
-import { getAllPostsServices } from "../services/getAllPostsServices";
 import { getOnePostByIdServices } from "../services/getOnePostByIdServices";
-
+import { usePostsStore } from "@/store/usePostsStore";
 
 const usePostsHook = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [firstThreePosts, setFirstThreePosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [bannerPosts, setBannerPosts] = useState<Post>();
+  const { posts, pagination, getAllPosts: getAllPostsStore } = usePostsStore();
+  const [currentPage, setCurrentPage] = useState(pagination?.currentPage || 1);
+  const [bannerPosts, setBannerPosts] = useState<Post | null>(null);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
 
-  const theRestOfPostsFirstPage = posts.filter((post) => post.id !== firstThreePosts[0].id && post.id !== firstThreePosts[1].id && post.id !== firstThreePosts[2].id && post.id !== "4bc31c32-2a58-478a-9b9f-4e02d6e90824") || [];
-
+  const firstThreePosts = allPosts?.slice(1, 4) || [];
+  const theRestOfPostsFirstPage = allPosts.filter((post) => {
+    return post?.id !== allPosts?.[0]?.id &&
+      post?.id !== allPosts?.[1]?.id &&
+      post?.id !== allPosts?.[2]?.id &&
+      post?.id !== "4bc31c32-2a58-478a-9b9f-4e02d6e90824";
+  });
 
   useEffect(() => {
-    getAllPosts(currentPage)
-    getBannerPosts()
+    getAllPosts(currentPage);
+    getBannerPosts();
   }, [currentPage]);
+
+  useEffect(() => {
+    if (posts?.length) {
+      setAllPosts((prevPosts) => {
+        const uniquePosts = posts.filter((post) => !prevPosts.some((p) => p.id === post.id));
+        return [...prevPosts, ...uniquePosts];
+      });
+    }
+  }, [posts]);
 
   const getBannerPosts = async () => {
     try {
-      setLoading(true);
       const { data } = await getOnePostByIdServices({ id: "4bc31c32-2a58-478a-9b9f-4e02d6e90824" });
-      setBannerPosts(data?.response);
+      setBannerPosts(data?.response || null);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
-  }
+  };
 
   const getAllPosts = async (page?: number) => {
     try {
-      setLoading(true);
       const query = page ? `?page=${page.toString()}` : "";
-      const { data } = await getAllPostsServices({ query: query });
-      const newPosts = data?.response?.data || [];
-      if (page === 1) {
-        const firstThree = [...newPosts].slice(1, 4);
-        setFirstThreePosts(firstThree);
-        setPosts(newPosts);
-      } else {
-        setPosts((prevPosts) => [
-          ...prevPosts,
-          ...(data?.response?.data || []),
-        ]);
-      }
-
-      setCurrentPage(data?.response?.meta?.pagination?.currentPage || 1);
+      await getAllPostsStore(query);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
-  }
+  };
 
   return {
-    posts,
     getAllPosts,
-    loading,
     bannerPosts,
     thefirstThreePosts: firstThreePosts,
     theRestOfPostsFirstPage,
     currentPage,
     setCurrentPage,
-    setPosts
-  }
+  };
 };
 
 export default usePostsHook;

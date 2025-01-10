@@ -8,7 +8,7 @@ const useNewPostHook = () => {
 
   const handleSubmit = async (values: FormValues) => {
     if (isCancelled) {
-      console.log("Proceso cancelado, no se ejecuta el servicio");
+      console.error("Proceso cancelado, no se ejecuta el servicio");
       return;
     }
 
@@ -18,7 +18,6 @@ const useNewPostHook = () => {
     };
     const formData = dataToFormData(formDataValue);
     await addPost(formData);
-    console.log("Servicio ejecutado correctamente");
   };
 
   return {
