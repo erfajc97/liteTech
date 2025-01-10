@@ -8,6 +8,8 @@ interface Post {
   id: string;
   title: string;
   image: string;
+  tags: string;
+  timeToRead: string;
 }
 
 interface PostsStore {
