@@ -11,10 +11,10 @@ interface AllPostsProps {
   thefirstThreePosts: Post[];
   currentPage: number;
   setCurrentPage: (page: number) => void;
-
+  loading: boolean;
 }
 
-const AllPosts = ({ theRestOfPosts, thefirstThreePosts, currentPage, setCurrentPage }: AllPostsProps) => {
+const AllPosts = ({ theRestOfPosts, thefirstThreePosts, currentPage, setCurrentPage, loading }: AllPostsProps) => {
   const handleLoadMore = () => {
     setCurrentPage(currentPage + 1);
   }
@@ -38,7 +38,7 @@ const AllPosts = ({ theRestOfPosts, thefirstThreePosts, currentPage, setCurrentP
         <Subscribe />
         {renderGridContainers(theRestOfPosts)}
         <div className='flex items-center justify-center mt-5'>
-          <Button onPress={handleLoadMore} className='bg-[#D8F34E] text-black rounded-none text-lg lg:text-2xl lg:p-8 p-6'>Load more</Button>
+          <Button onPress={handleLoadMore} className='bg-[#D8F34E] text-black rounded-none text-lg lg:text-2xl lg:p-8 p-6' isLoading={loading}>Load more</Button>
         </div>
       </div>
       <MostViewed />

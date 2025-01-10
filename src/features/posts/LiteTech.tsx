@@ -34,7 +34,7 @@ const LiteTech = () => {
         </Suspense>
       </div>
       <Topics />
-      <AllPosts theRestOfPosts={theRestOfPostsFirstPage} thefirstThreePosts={thefirstThreePosts} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <AllPosts theRestOfPosts={theRestOfPostsFirstPage} thefirstThreePosts={thefirstThreePosts} currentPage={currentPage} setCurrentPage={setCurrentPage} loading={loading} />
     </div>
   );
 };
