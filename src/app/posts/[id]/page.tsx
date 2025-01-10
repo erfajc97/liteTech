@@ -1,3 +1,4 @@
+"use client"
 import React, { Suspense } from 'react';
 import { getOnePostByIdServices } from '@/features/posts/services/getOnePostByIdServices';
 import BannerSkeleton from '@/app/components/skeleton/BannerSkeleton';
